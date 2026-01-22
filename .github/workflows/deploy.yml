@@ -1,11 +1,9 @@
 name: Build and Push to GHCR
 
-# 언제 실행될지 정의: 'main' 브랜치에 코드가 push 될 때마다 실행
 on:
   push:
     branches: [ "main" ]
 
-# GitHub 패키지 저장소(GHCR)에 이미지를 올리려면 권한이 필요함
 permissions:
   contents: read
   packages: write
@@ -14,11 +12,9 @@ jobs:
   build-and-push:
     runs-on: ubuntu-latest
     steps:
-      # 1. 내 코드를 GitHub Actions 서버로 내려받음
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # 2. GHCR에 로그인 (GitHub 아이디와 비밀번호(토큰) 사용)
       - name: Log in to the Container registry
         uses: docker/login-action@v2
         with:
@@ -26,16 +22,13 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # 3. 소문자로 변환 (이미지 이름에 대문자가 있으면 에러남)
-      - name: Lowercase image name
-        run: |
-          echo "IMAGE_NAME=ghcr.io/${{ github.repository }}" >> $GITHUB_ENV
-          echo "IMAGE_NAME=$(echo $IMAGE_NAME | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
 
-      # 4. 도커 이미지 빌드하고 GHCR로 푸시
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
           context: .
           push: true
-          tags: ${{ env.IMAGE_NAME }}:latest
+          # [직접 입력] 변수 오류를 원천 차단하는 가장 확실한 방법
+          tags: ghcr.io/junseok6523/gangwon-junseok-backend:latest
