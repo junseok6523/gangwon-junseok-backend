@@ -25,25 +25,22 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      - name: Lowercase image name
-        run: |
-          # 1. 쉘 변수에 먼저 저장 (여기서 대문자가 섞여있을 수 있음)
-          IMAGE_ID=ghcr.io/${{ github.repository }}
-          
-          # 2. 소문자로 변환 (tr 명령어 사용)
-          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
-          
-          # 3. 다음 단계에서 쓸 수 있도록 환경변수로 등록
-          echo "IMAGE_NAME=$IMAGE_ID" >> $GITHUB_ENV
-          
-          # 4. 확인용 출력 (로그에서 확인 가능)
-          echo "Image ID will be: $IMAGE_ID"
+      # [핵심 변경] 수동 스크립트 대신 공식 도구 사용
+      # 이 도구가 알아서 대문자를 소문자로 바꾸고, 태그를 예쁘게 만들어줍니다.
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ghcr.io/${{ github.repository }}
+          tags: |
+            type=raw,value=latest
+            type=sha
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
           context: .
           push: true
-          tags: |
-            ${{ env.IMAGE_NAME }}:latest
-            ${{ env.IMAGE_NAME }}:${{ github.sha }}
+          # 위 단계(meta)에서 만들어준 태그를 그대로 가져다 씁니다. (에러 원천 차단)
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
