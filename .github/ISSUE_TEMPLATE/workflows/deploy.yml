@@ -25,22 +25,12 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      # [핵심 변경] 수동 스크립트 대신 공식 도구 사용
-      # 이 도구가 알아서 대문자를 소문자로 바꾸고, 태그를 예쁘게 만들어줍니다.
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v4
-        with:
-          images: ghcr.io/${{ github.repository }}
-          tags: |
-            type=raw,value=latest
-            type=sha
-
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
           context: .
           push: true
-          # 위 단계(meta)에서 만들어준 태그를 그대로 가져다 씁니다. (에러 원천 차단)
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          # [핵심] 변수 안 쓰고 직접 주소를 적습니다. (오타/변수 오류 원천 차단)
+          tags: |
+            ghcr.io/junseok6523/gangwon-junseok-backend:latest
+            ghcr.io/junseok6523/gangwon-junseok-backend:${{ github.sha }}
