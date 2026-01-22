@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  backend:
+    container_name: gangwon-agent-backend
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - CHROMA_HOST=chroma-server
+      - CHROMA_PORT=8000
+      # .env 파일에 있는 API 키가 자동으로 주입됩니다.
+      - UPSTAGE_API_KEY=${UPSTAGE_API_KEY}
+    depends_on:
+      - chroma-server
+    networks:
+      - agent-net
+
+  chroma-server:
+    image: chromadb/chroma:latest
+    container_name: gangwon-chroma-db
+    ports:
+      - "8001:8000"
+    volumes:
+      # 데이터를 컨테이너가 꺼져도 사라지지 않게 로컬에 저장 (Data Persistence)
+      - ./chroma_data:/chroma/chroma
+    networks:
+      - agent-net
+
+networks:
+  agent-net:
+    driver: bridge

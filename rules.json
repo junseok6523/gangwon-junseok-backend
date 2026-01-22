@@ -1,0 +1,23 @@
+[
+  {
+    "office": "서울",
+    "location": "Asia/Seoul",
+    "work_hours": "09:00-18:00",
+    "lunch_break": "12:00-13:00",
+    "description": "서울 본사는 9시 출근, 6시 퇴근이며 점심시간은 12시부터 1시까지입니다."
+  },
+  {
+    "office": "뉴욕",
+    "location": "America/New_York",
+    "work_hours": "09:00-17:00",
+    "lunch_break": "12:00-13:00",
+    "description": "뉴욕 지사는 9시부터 5시까지 근무하며, 점심시간은 12시부터 1시입니다."
+  },
+  {
+    "office": "런던",
+    "location": "Europe/London",
+    "work_hours": "09:30-17:30",
+    "lunch_break": "12:30-13:30",
+    "description": "런던 지사는 9시 30분 출근, 5시 30분 퇴근이고 점심시간은 12시 30분부터 1시 30분까지입니다."
+  }
+]
