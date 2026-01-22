@@ -25,12 +25,12 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
+      # [수정] 복잡한 변수 변환 단계 삭제함!
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
           context: .
           push: true
-          # [핵심] 변수 안 쓰고 직접 주소를 적습니다. (오타/변수 오류 원천 차단)
-          tags: |
-            ghcr.io/junseok6523/gangwon-junseok-backend:latest
-            ghcr.io/junseok6523/gangwon-junseok-backend:${{ github.sha }}
+        
+          tags: ghcr.io/junseok6523/gangwon-junseok-backend:latest
